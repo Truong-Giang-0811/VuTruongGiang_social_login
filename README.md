@@ -1,59 +1,123 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📘 BÀI TẬP: TÍCH HỢP ĐĂNG NHẬP GOOGLE & FACEBOOK (LARAVEL SOCIALITE)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 👤 Thông tin sinh viên
+- **Họ tên:** Vũ Trường Giang  
+- **Mã sinh viên:** 23810310117
+- **Lớp:** D18CNPM2
+- **Trường:** Đại học Điện lực (Electric Power University)  
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📌 1. Mô tả chung
+Dự án xây dựng chức năng xác thực người dùng thông qua bên thứ ba (**Google** và **Facebook**) sử dụng **Laravel Framework** và thư viện **Socialite**.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Hệ thống cho phép:
+- Tự động đăng ký tài khoản mới bằng thông tin từ mạng xã hội  
+- Đăng nhập nếu tài khoản đã tồn tại  
+- Lưu trữ thông tin người dùng (tên, email, avatar, provider)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ⚙️ 2. Cài đặt hệ thống
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### A. Cấu hình Database
+Tạo database:
+```sql
+CREATE DATABASE social_login_db;
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Cập nhật file `.env`:
+```env
+DB_DATABASE=social_login_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### B. Chạy lệnh khởi tạo
 
-### Premium Partners
+```bash
+composer install
+php artisan migrate
+php artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🔐 3. Cấu hình OAuth 2.0
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### A. Google OAuth
+- Truy cập: https://console.cloud.google.com  
+- Tạo OAuth Client ID  
 
-## Code of Conduct
+Redirect URI:
+```
+http://127.0.0.1:8000/auth/google/callback
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+### B. Facebook OAuth
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Chạy Ngrok:
+```bash
+ngrok http 8000
+```
 
-## License
+Redirect URI:
+```
+https://your-ngrok-id.ngrok-free.app/auth/facebook/callback
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🔑 4. Cấu hình `.env`
+
+```env
+# Google
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8000/auth/google/callback
+
+# Facebook
+FACEBOOK_CLIENT_ID=your_facebook_client_id
+FACEBOOK_CLIENT_SECRET=your_facebook_client_secret
+FACEBOOK_REDIRECT_URI=https://your-ngrok-url/auth/facebook/callback
+```
+
+---
+
+## 🧱 5. Cấu trúc chính
+
+- `app/Http/Controllers/SocialController.php`
+- `database/migrations/create_users_table.php`
+- `resources/views/login.blade.php`
+- `resources/views/dashboard.blade.php`
+
+---
+
+## 🎯 6. Demo chức năng
+
+- ✅ Đăng nhập Google  
+- ✅ Đăng nhập Facebook  
+- ✅ Tạo tài khoản tự động  
+- ✅ Hiển thị: tên, email, avatar  
+- ✅ Hiển thị: mã sinh viên, lớp  
+- ✅ Logout (xóa session)  
+
+---
+
+## 📌 7. Công nghệ sử dụng
+- Laravel  
+- Laravel Socialite  
+- MySQL  
+- OAuth 2.0  
+- Ngrok  
+
+---
+
+## 📎 8. Ghi chú
+- Facebook yêu cầu HTTPS → dùng Ngrok khi chạy local  
+- Không hard-code thông tin OAuth  
+- Luôn lưu config trong `.env`
